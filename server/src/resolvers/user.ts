@@ -3,14 +3,19 @@ import {
   Arg,
   Ctx,
   Field,
+  FieldResolver,
   InputType,
   Mutation,
   ObjectType,
   Query,
   Resolver,
+  ResolverInterface,
+  Root,
 } from "type-graphql";
 import { User } from "../entities/User";
 import argon2 from "argon2";
+import { Home } from "../entities/Home";
+import { HomeUserLink } from "../entities/HomeUserLink";
 
 @InputType()
 class UsernamePasswordInput {
@@ -21,7 +26,7 @@ class UsernamePasswordInput {
 }
 
 @ObjectType()
-class FieldError {
+export class FieldError {
   @Field()
   field: string;
 
@@ -38,8 +43,25 @@ class UserResponse {
   user?: User;
 }
 
-@Resolver()
-export class UserResolver {
+@Resolver((of) => User)
+export class UserResolver implements ResolverInterface<User> {
+  @FieldResolver()
+  async homes(@Root() user: User, @Ctx() { em }: MyContext) {
+    const links = await em.find(HomeUserLink, { userId: user.id });
+
+    if (links.length === 0) {
+      return null;
+    }
+
+    var homeIds = [];
+    for (var i = 0; i < links.length; i++) {
+      homeIds.push(links[i].homeId);
+    }
+
+    const homes = await em.find(Home, homeIds);
+    return homes;
+  }
+
   @Query(() => User, { nullable: true })
   async me(@Ctx() { req, em }: MyContext) {
     if (!req.session.userId) {
@@ -47,6 +69,16 @@ export class UserResolver {
     }
     const user = await em.findOne(User, { id: req.session.userId });
     return user;
+  }
+
+  @Query(() => [Home], { nullable: true })
+  myhomes(@Ctx() { req, em }: MyContext) {
+    if (!req.session.userId) {
+      return null;
+    }
+    const homeIds = em.find(HomeUserLink, { userId: req.session.userId });
+    console.log(homeIds);
+    return null;
   }
 
   @Mutation(() => UserResponse)
