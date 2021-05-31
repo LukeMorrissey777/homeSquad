@@ -43,7 +43,7 @@ class UserResponse {
   user?: User;
 }
 
-@Resolver((of) => User)
+@Resolver(() => User)
 export class UserResolver implements ResolverInterface<User> {
   @FieldResolver()
   async homes(@Root() user: User, @Ctx() { em }: MyContext) {

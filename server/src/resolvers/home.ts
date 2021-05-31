@@ -26,7 +26,7 @@ class HomeResponse {
   home?: Home;
 }
 
-@Resolver((of) => Home)
+@Resolver(() => Home)
 export class HomeResolver implements ResolverInterface<Home> {
   @FieldResolver()
   async owner(@Root() home: Home, @Ctx() { em }: MyContext) {
@@ -75,7 +75,20 @@ export class HomeResolver implements ResolverInterface<Home> {
       };
     }
     const home = em.create(Home, { name, ownerId: req.session.userId });
-    await em.persistAndFlush(home);
+    try {
+      await em.persistAndFlush(home);
+    } catch (err) {
+      if (err.code === "23505") {
+        return {
+          errors: [
+            {
+              field: "name",
+              message: "A Home with that name already exsists",
+            },
+          ],
+        };
+      }
+    }
     const link = em.create(HomeUserLink, {
       userId: req.session.userId,
       homeId: home.id,

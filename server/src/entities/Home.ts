@@ -27,6 +27,6 @@ export class Home {
   users: User[] | null;
 
   @Field()
-  @Property()
+  @Property({ unique: true })
   name!: string;
 }
