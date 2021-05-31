@@ -26,6 +26,15 @@ class HomeResponse {
   home?: Home;
 }
 
+@ObjectType()
+class SuccessResponse {
+  @Field(() => [FieldError], { nullable: true })
+  errors?: FieldError[];
+
+  @Field(() => Boolean)
+  success: boolean;
+}
+
 @Resolver(() => Home)
 export class HomeResolver implements ResolverInterface<Home> {
   @FieldResolver()
@@ -97,6 +106,104 @@ export class HomeResolver implements ResolverInterface<Home> {
     return { home };
   }
 
+  @Mutation(() => HomeResponse)
+  async joinHome(
+    @Arg("name") name: string,
+    @Ctx() { req, em }: MyContext
+  ): Promise<HomeResponse> {
+    if (!req.session.userId) {
+      return {
+        errors: [
+          {
+            field: "username",
+            message: "You are not logged in so you cannot create a room",
+          },
+        ],
+      };
+    }
+    const home = await em.findOne(Home, { name });
+    if (!home) {
+      return {
+        errors: [
+          {
+            field: "name",
+            message: "A home with that name does not exsist",
+          },
+        ],
+      };
+    }
+    const isLink = await em.findOne(HomeUserLink, {
+      userId: req.session.userId,
+      homeId: home.id,
+    });
+    if (isLink) {
+      return {
+        home,
+        errors: [
+          {
+            field: "name",
+            message: "You are already a member of this home",
+          },
+        ],
+      };
+    }
+    const link = em.create(HomeUserLink, {
+      userId: req.session.userId,
+      homeId: home.id,
+    });
+    await em.persistAndFlush(link);
+    return { home };
+  }
+
+  @Mutation(() => SuccessResponse)
+  async leaveHome(
+    @Arg("id") id: number,
+    @Ctx() { em, req }: MyContext
+  ): Promise<SuccessResponse> {
+    if (!req.session.userId) {
+      return {
+        success: false,
+        errors: [
+          {
+            field: "username",
+            message: "You are not logged in so you cannot leave a home",
+          },
+        ],
+      };
+    }
+    const home = await em.findOne(Home, { id });
+    if (!home) {
+      return {
+        success: false,
+        errors: [
+          {
+            field: "id",
+            message: "No home with that id exsists",
+          },
+        ],
+      };
+    }
+    if (home.ownerId === req.session.userId) {
+      return {
+        success: false,
+        errors: [
+          {
+            field: "username",
+            message:
+              "You can not leave a Home you own. If you want you can delete it",
+          },
+        ],
+      };
+    }
+    await em.nativeDelete(HomeUserLink, {
+      homeId: id,
+      userId: req.session.userId,
+    });
+    return {
+      success: true,
+    };
+  }
+
   @Mutation(() => Home, { nullable: true })
   async updateHome(
     @Arg("id") id: number,
@@ -114,13 +221,37 @@ export class HomeResolver implements ResolverInterface<Home> {
     return home;
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => SuccessResponse)
   async deleteHome(
     @Arg("id") id: number,
-    @Ctx() { em }: MyContext
-  ): Promise<boolean> {
+    @Ctx() { req, em }: MyContext
+  ): Promise<SuccessResponse> {
+    const home = await em.findOne(Home, { id });
+    if (!home) {
+      return {
+        success: false,
+        errors: [
+          {
+            field: "id",
+            message: "No home with that id exists",
+          },
+        ],
+      };
+    }
+    if (home.ownerId != req.session.userId) {
+      return {
+        success: false,
+        errors: [
+          {
+            field: "username",
+            message:
+              "You can not delete a home you don't own. If you want you can leave the home.",
+          },
+        ],
+      };
+    }
     await em.nativeDelete(Home, { id });
     await em.nativeDelete(HomeUserLink, { homeId: id });
-    return true;
+    return { success: true };
   }
 }
