@@ -25,21 +25,51 @@ export type Home = {
   id: Scalars['Float'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+  owner?: Maybe<User>;
+  users?: Maybe<Array<User>>;
   name: Scalars['String'];
+};
+
+export type HomeResponse = {
+  __typename?: 'HomeResponse';
+  errors?: Maybe<Array<FieldError>>;
+  home?: Maybe<Home>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createHome: Home;
-  updateHome?: Maybe<Home>;
-  deleteHome: Scalars['Boolean'];
   register: UserResponse;
   login: UserResponse;
+  createHome: HomeResponse;
+  joinHome: HomeResponse;
+  leaveHome: SuccessResponse;
+  updateHome?: Maybe<Home>;
+  deleteHome: SuccessResponse;
+};
+
+
+export type MutationRegisterArgs = {
+  options: UsernamePasswordInput;
+};
+
+
+export type MutationLoginArgs = {
+  options: UsernamePasswordInput;
 };
 
 
 export type MutationCreateHomeArgs = {
   name: Scalars['String'];
+};
+
+
+export type MutationJoinHomeArgs = {
+  name: Scalars['String'];
+};
+
+
+export type MutationLeaveHomeArgs = {
+  id: Scalars['Float'];
 };
 
 
@@ -53,27 +83,24 @@ export type MutationDeleteHomeArgs = {
   id: Scalars['Float'];
 };
 
-
-export type MutationRegisterArgs = {
-  options: UsernamePasswordInput;
-};
-
-
-export type MutationLoginArgs = {
-  options: UsernamePasswordInput;
-};
-
 export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
+  me?: Maybe<User>;
+  myhomes?: Maybe<Array<Home>>;
   homes: Array<Home>;
   home?: Maybe<Home>;
-  me?: Maybe<User>;
 };
 
 
 export type QueryHomeArgs = {
   id: Scalars['Float'];
+};
+
+export type SuccessResponse = {
+  __typename?: 'SuccessResponse';
+  errors?: Maybe<Array<FieldError>>;
+  success: Scalars['Boolean'];
 };
 
 export type User = {
@@ -82,6 +109,7 @@ export type User = {
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   username: Scalars['String'];
+  homes?: Maybe<Array<Home>>;
 };
 
 export type UserResponse = {
@@ -142,7 +170,11 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'username' | 'id'>
+    & Pick<User, 'id' | 'username'>
+    & { homes?: Maybe<Array<(
+      { __typename?: 'Home' }
+      & Pick<Home, 'id' | 'name'>
+    )>> }
   )> }
 );
 
@@ -186,8 +218,12 @@ export function useRegisterMutation() {
 export const MeDocument = gql`
     query Me {
   me {
-    username
     id
+    username
+    homes {
+      id
+      name
+    }
   }
 }
     `;
