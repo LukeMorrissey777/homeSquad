@@ -59,20 +59,28 @@ const client = createClient({
               }
             );
           },
-          // createHome: (result, args, cache, info) => {
-          //   betterUpdateQuery<CreateHomeMutation, MeQuery>(
-          //     cache,
-          //     { query: MeDocument },
-          //     result,
-          //     (result, query) => {
-          //       if (result.createHome.errors) {
-          //         return query;
-          //       } else {
-          //         return { me: result.createHome. };
-          //       }
-          //     }
-          //   );
-          // },
+          createHome: (result, args, cache, info) => {
+            betterUpdateQuery<CreateHomeMutation, MeQuery>(
+              cache,
+              { query: MeDocument },
+              result,
+              (result, query) => {
+                if (
+                  result.createHome.errors ||
+                  !query.me?.homes ||
+                  !result.createHome.home?.id
+                ) {
+                  return query;
+                } else {
+                  query.me.homes.push({
+                    id: result.createHome.home.id,
+                    name: result.createHome.home.name,
+                  });
+                  return query;
+                }
+              }
+            );
+          },
         },
       },
     }),
