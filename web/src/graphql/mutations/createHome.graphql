@@ -1,0 +1,12 @@
+mutation CreateHome($name: String!) {
+  createHome(name: $name) {
+    errors {
+      field
+      message
+    }
+    home {
+      id
+      name
+    }
+  }
+}

@@ -123,6 +123,25 @@ export type UsernamePasswordInput = {
   password: Scalars['String'];
 };
 
+export type CreateHomeMutationVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type CreateHomeMutation = (
+  { __typename?: 'Mutation' }
+  & { createHome: (
+    { __typename?: 'HomeResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, home?: Maybe<(
+      { __typename?: 'Home' }
+      & Pick<Home, 'id' | 'name'>
+    )> }
+  ) }
+);
+
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
@@ -179,6 +198,24 @@ export type MeQuery = (
 );
 
 
+export const CreateHomeDocument = gql`
+    mutation CreateHome($name: String!) {
+  createHome(name: $name) {
+    errors {
+      field
+      message
+    }
+    home {
+      id
+      name
+    }
+  }
+}
+    `;
+
+export function useCreateHomeMutation() {
+  return Urql.useMutation<CreateHomeMutation, CreateHomeMutationVariables>(CreateHomeDocument);
+};
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {
   login(options: {username: $username, password: $password}) {

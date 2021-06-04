@@ -20,13 +20,11 @@ export const HomeBody: React.FC<HomeBodyProps> = ({}) => {
       </>
     );
   } else {
-    var homeList = "";
-    for (var i = 0; i < data.me.homes.length; i++) {
-      homeList += (i + 1).toString() + ".   " + data.me.homes[i].name + "\n";
-    }
     body = (
       <>
-        <div>{homeList}</div>
+        {data.me.homes.map((home) => {
+          return <div>{home.name}</div>;
+        })}
       </>
     );
   }

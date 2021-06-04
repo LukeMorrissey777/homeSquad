@@ -3,6 +3,7 @@ import { Cache, cacheExchange, QueryInput } from "@urql/exchange-graphcache";
 import React from "react";
 import { Provider, createClient, dedupExchange, fetchExchange } from "urql";
 import {
+  CreateHomeMutation,
   LoginMutation,
   MeDocument,
   MeQuery,
@@ -58,6 +59,20 @@ const client = createClient({
               }
             );
           },
+          // createHome: (result, args, cache, info) => {
+          //   betterUpdateQuery<CreateHomeMutation, MeQuery>(
+          //     cache,
+          //     { query: MeDocument },
+          //     result,
+          //     (result, query) => {
+          //       if (result.createHome.errors) {
+          //         return query;
+          //       } else {
+          //         return { me: result.createHome. };
+          //       }
+          //     }
+          //   );
+          // },
         },
       },
     }),

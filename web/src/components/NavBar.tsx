@@ -15,6 +15,7 @@ import React from "react";
 import { Home, Maybe, useMeQuery } from "../generated/graphql";
 import NextLink from "next/link";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import { CreateHomeModal } from "./CreateHomeModal";
 
 interface NavBarProps {}
 
@@ -36,7 +37,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     var list = (
       <Menu>
         <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-          Homes
+          Your Homes
         </MenuButton>
         <MenuList>
           {homes.map((home) => {
@@ -68,6 +69,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     homeList = getHomeList(data.me.homes);
     body = (
       <>
+        <CreateHomeModal />
         <Text ml={5} mr={5} fontSize="x-large" fontWeight="bold" color="white">
           {data.me.username}
         </Text>
