@@ -4,6 +4,7 @@ import React from "react";
 import { Provider, createClient, dedupExchange, fetchExchange } from "urql";
 import {
   CreateHomeMutation,
+  JoinHomeMutation,
   LoginMutation,
   MeDocument,
   MeQuery,
@@ -75,6 +76,28 @@ const client = createClient({
                   query.me.homes.push({
                     id: result.createHome.home.id,
                     name: result.createHome.home.name,
+                  });
+                  return query;
+                }
+              }
+            );
+          },
+          joinHome: (result, args, cache, info) => {
+            betterUpdateQuery<JoinHomeMutation, MeQuery>(
+              cache,
+              { query: MeDocument },
+              result,
+              (result, query) => {
+                if (
+                  result.joinHome.errors ||
+                  !query.me?.homes ||
+                  !result.joinHome.home?.id
+                ) {
+                  return query;
+                } else {
+                  query.me.homes.push({
+                    id: result.joinHome.home.id,
+                    name: result.joinHome.home.name,
                   });
                   return query;
                 }

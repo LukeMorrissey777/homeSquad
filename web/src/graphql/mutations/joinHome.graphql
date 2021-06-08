@@ -1,0 +1,12 @@
+mutation JoinHome($name: String!) {
+  joinHome(name: $name) {
+    errors {
+      field
+      message
+    }
+    home {
+      id
+      name
+    }
+  }
+}

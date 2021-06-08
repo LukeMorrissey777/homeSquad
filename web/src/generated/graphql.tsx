@@ -142,6 +142,25 @@ export type CreateHomeMutation = (
   ) }
 );
 
+export type JoinHomeMutationVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type JoinHomeMutation = (
+  { __typename?: 'Mutation' }
+  & { joinHome: (
+    { __typename?: 'HomeResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, home?: Maybe<(
+      { __typename?: 'Home' }
+      & Pick<Home, 'id' | 'name'>
+    )> }
+  ) }
+);
+
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
@@ -215,6 +234,24 @@ export const CreateHomeDocument = gql`
 
 export function useCreateHomeMutation() {
   return Urql.useMutation<CreateHomeMutation, CreateHomeMutationVariables>(CreateHomeDocument);
+};
+export const JoinHomeDocument = gql`
+    mutation JoinHome($name: String!) {
+  joinHome(name: $name) {
+    errors {
+      field
+      message
+    }
+    home {
+      id
+      name
+    }
+  }
+}
+    `;
+
+export function useJoinHomeMutation() {
+  return Urql.useMutation<JoinHomeMutation, JoinHomeMutationVariables>(JoinHomeDocument);
 };
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {
