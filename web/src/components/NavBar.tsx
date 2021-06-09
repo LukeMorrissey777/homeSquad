@@ -11,15 +11,18 @@ import {
   MenuList,
   MenuItem,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { Home, Maybe, useMeQuery } from "../generated/graphql";
 import NextLink from "next/link";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { AddHomeModal } from "./AddHomeModal";
 
-interface NavBarProps {}
+interface NavBarProps {
+  homeId: number | null;
+  setHomeId: Dispatch<SetStateAction<number | null>>;
+}
 
-export const NavBar: React.FC<NavBarProps> = ({}) => {
+export const NavBar: React.FC<NavBarProps> = ({ setHomeId }) => {
   const [{ data, fetching }] = useMeQuery();
   let body = null;
   let homeList = null;
@@ -41,7 +44,15 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
         </MenuButton>
         <MenuList>
           {homes.map((home) => {
-            return <MenuItem>{home.name}</MenuItem>;
+            return (
+              <MenuItem
+                key={home.id}
+                id={home.id.toString()}
+                onClick={() => setHomeId(home.id)}
+              >
+                {home.name}
+              </MenuItem>
+            );
           })}
         </MenuList>
       </Menu>

@@ -47,11 +47,16 @@ export const AddHomeModal: React.FC<AddHomeModalProps> = ({}) => {
     onClose();
   };
 
+  const onTypeChange = (newType: string) => {
+    setAddHomeType(newType);
+    setResMessage(<></>);
+  };
+
   const options = ["Create", "Join"];
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "framework",
     defaultValue: addHomeType,
-    onChange: setAddHomeType,
+    onChange: onTypeChange,
     value: addHomeType,
   });
   const group = getRootProps();

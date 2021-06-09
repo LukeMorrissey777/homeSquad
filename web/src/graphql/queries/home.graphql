@@ -1,0 +1,14 @@
+query Home($id: Float!) {
+  home(id: $id) {
+    id
+    name
+    owner {
+      id
+      username
+    }
+    users {
+      id
+      username
+    }
+  }
+}

@@ -201,6 +201,26 @@ export type RegisterMutation = (
   ) }
 );
 
+export type HomeQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type HomeQuery = (
+  { __typename?: 'Query' }
+  & { home?: Maybe<(
+    { __typename?: 'Home' }
+    & Pick<Home, 'id' | 'name'>
+    & { owner?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'username'>
+    )>, users?: Maybe<Array<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'username'>
+    )>> }
+  )> }
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -288,6 +308,26 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const HomeDocument = gql`
+    query Home($id: Float!) {
+  home(id: $id) {
+    id
+    name
+    owner {
+      id
+      username
+    }
+    users {
+      id
+      username
+    }
+  }
+}
+    `;
+
+export function useHomeQuery(options: Omit<Urql.UseQueryArgs<HomeQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<HomeQuery>({ query: HomeDocument, ...options });
 };
 export const MeDocument = gql`
     query Me {
