@@ -10,19 +10,26 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Center,
 } from "@chakra-ui/react";
 import React, { Dispatch, SetStateAction } from "react";
-import { Home, Maybe, useMeQuery } from "../generated/graphql";
+import {
+  Home,
+  HomeQuery,
+  Maybe,
+  useHomeQuery,
+  useMeQuery,
+} from "../generated/graphql";
 import NextLink from "next/link";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { AddHomeModal } from "./AddHomeModal";
 
 interface NavBarProps {
-  homeId: number | null;
   setHomeId: Dispatch<SetStateAction<number | null>>;
+  setUserId: Dispatch<SetStateAction<number | null>>;
 }
 
-export const NavBar: React.FC<NavBarProps> = ({ setHomeId }) => {
+export const NavBar: React.FC<NavBarProps> = ({ setHomeId, setUserId }) => {
   const [{ data, fetching }] = useMeQuery();
   let body = null;
   let homeList = null;
@@ -39,7 +46,7 @@ export const NavBar: React.FC<NavBarProps> = ({ setHomeId }) => {
     }
     var list = (
       <Menu>
-        <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+        <MenuButton size="sm" as={Button} rightIcon={<ChevronDownIcon />}>
           Your Homes
         </MenuButton>
         <MenuList>
@@ -77,22 +84,28 @@ export const NavBar: React.FC<NavBarProps> = ({ setHomeId }) => {
       </>
     );
   } else {
+    setUserId(data.me.id);
     homeList = getHomeList(data.me.homes);
     body = (
       <>
         <AddHomeModal />
-        <Text ml={5} mr={5} fontSize="x-large" fontWeight="bold" color="white">
-          {data.me.username}
-        </Text>
+        <Center>
+          <Text ml={5} mr={5} fontSize="large" fontWeight="bold" color="white">
+            {data.me.username}
+          </Text>
+        </Center>
       </>
     );
   }
   return (
-    <Box bg="teal.900" p={4} ml={"auto"}>
+    <Box bg="teal.700" p={2.5} ml={"auto"}>
       <Flex>
-        <Text ml={5} fontSize="x-large" fontWeight="bold" color="white">
-          HomeSquad
-        </Text>
+        <Center>
+          <Text ml={5} fontSize="large" fontWeight="bold" color="white">
+            HomeSquad
+          </Text>
+        </Center>
+
         <Spacer />
         {homeList}
         {body}

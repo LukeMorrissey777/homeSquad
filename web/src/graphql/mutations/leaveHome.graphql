@@ -1,0 +1,9 @@
+mutation LeaveHome($id: Float!) {
+  leaveHome(id: $id) {
+    success
+    errors {
+      field
+      message
+    }
+  }
+}

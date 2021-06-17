@@ -142,6 +142,23 @@ export type CreateHomeMutation = (
   ) }
 );
 
+export type DeleteHomeMutationVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type DeleteHomeMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteHome: (
+    { __typename?: 'SuccessResponse' }
+    & Pick<SuccessResponse, 'success'>
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>> }
+  ) }
+);
+
 export type JoinHomeMutationVariables = Exact<{
   name: Scalars['String'];
 }>;
@@ -158,6 +175,23 @@ export type JoinHomeMutation = (
       { __typename?: 'Home' }
       & Pick<Home, 'id' | 'name'>
     )> }
+  ) }
+);
+
+export type LeaveHomeMutationVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type LeaveHomeMutation = (
+  { __typename?: 'Mutation' }
+  & { leaveHome: (
+    { __typename?: 'SuccessResponse' }
+    & Pick<SuccessResponse, 'success'>
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>> }
   ) }
 );
 
@@ -255,6 +289,21 @@ export const CreateHomeDocument = gql`
 export function useCreateHomeMutation() {
   return Urql.useMutation<CreateHomeMutation, CreateHomeMutationVariables>(CreateHomeDocument);
 };
+export const DeleteHomeDocument = gql`
+    mutation DeleteHome($id: Float!) {
+  deleteHome(id: $id) {
+    success
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+
+export function useDeleteHomeMutation() {
+  return Urql.useMutation<DeleteHomeMutation, DeleteHomeMutationVariables>(DeleteHomeDocument);
+};
 export const JoinHomeDocument = gql`
     mutation JoinHome($name: String!) {
   joinHome(name: $name) {
@@ -272,6 +321,21 @@ export const JoinHomeDocument = gql`
 
 export function useJoinHomeMutation() {
   return Urql.useMutation<JoinHomeMutation, JoinHomeMutationVariables>(JoinHomeDocument);
+};
+export const LeaveHomeDocument = gql`
+    mutation LeaveHome($id: Float!) {
+  leaveHome(id: $id) {
+    success
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+
+export function useLeaveHomeMutation() {
+  return Urql.useMutation<LeaveHomeMutation, LeaveHomeMutationVariables>(LeaveHomeDocument);
 };
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {

@@ -1,65 +1,55 @@
+import { Button, IconButton } from "@chakra-ui/button";
+import Icon from "@chakra-ui/icon";
+import { AddIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
+import { Box, Center, Flex, Spacer, Text } from "@chakra-ui/layout";
+import { SP } from "next/dist/next-server/lib/utils";
 import { stringify } from "querystring";
-import React from "react";
-import { useMeQuery, useHomeQuery } from "../generated/graphql";
+import React, { useState } from "react";
+import { useMeQuery, useHomeQuery, HomeQuery } from "../generated/graphql";
+import { MinusHomeModal } from "./MinusHomeModal";
 
 interface HomeBodyProps {
+  userId: number | null;
   homeId: number | null;
 }
 
-export const HomeBody: React.FC<HomeBodyProps> = ({ homeId }) => {
-  // const [{ data, fetching }] = useMeQuery();
-  let body = null;
+export const HomeBody: React.FC<HomeBodyProps> = ({ homeId, userId }) => {
+  let header = null;
+  let deleteButton = null;
 
-  if (!homeId) {
-    body = (
-      <>
-        <div>Please choose a home to view</div>
-      </>
-    );
+  if (!userId) {
+    header = <>Not Logged In</>;
+  } else if (!homeId) {
+    header = <>Please choose a home to view</>;
   } else {
     const [{ data: homeData, fetching: homeFetching }] = useHomeQuery({
       variables: { id: homeId },
     });
     if (homeFetching) {
-      body = <div>... Loading</div>;
+      header = <>Loading ...</>;
     } else if (!homeData?.home) {
-      body = <div>No home</div>;
+      header = <>No home</>;
     } else {
-      body = (
-        <div>
-          {homeData.home.name} owned by {homeData.home.owner?.username}
-        </div>
-      );
+      header = <>{homeData.home.name}</>;
+      deleteButton = <MinusHomeModal userId={userId} home={homeData.home} />;
     }
-    // body = <div>saw</div>;
   }
 
-  // if (fetching) {
-  // } else if (!data?.me) {
-  //   body = (
-  //     <>
-  //       <div>Not logged in</div>
-  //     </>
-  //   );
-  // } else if (!data.me.homes) {
-  //   body = (
-  //     <>
-  //       <div>No homes yet</div>
-  //     </>
-  //   );
-  // } else {
-  //   body = (
-  //     <>
-  //       {data.me.homes.map((home) => {
-  //         return <div>{home.name}</div>;
-  //       })}
-  //     </>
-  //   );
-  // }
   return (
-    <div>
-      {/* <div>{homeId}</div> */}
-      <div>{body}</div>
-    </div>
+    <>
+      <Box bg="teal.900" p={8} ml={"auto"}></Box>
+      <Box bg="teal.700" p={4} ml={"auto"}>
+        <Flex>
+          <Spacer />
+          <Center>
+            <Text fontSize="3xl" fontWeight="bold" color="white">
+              {header}
+            </Text>
+          </Center>
+          <Spacer />
+          {deleteButton}
+        </Flex>
+      </Box>
+    </>
   );
 };

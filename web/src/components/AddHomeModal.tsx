@@ -130,6 +130,7 @@ export const AddHomeModal: React.FC<AddHomeModalProps> = ({}) => {
   return (
     <>
       <IconButton
+        size="sm"
         aria-label="Create/Join Home"
         ml={5}
         colorScheme="teal"

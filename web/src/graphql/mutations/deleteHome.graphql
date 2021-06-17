@@ -1,0 +1,9 @@
+mutation DeleteHome($id: Float!) {
+  deleteHome(id: $id) {
+    success
+    errors {
+      field
+      message
+    }
+  }
+}
