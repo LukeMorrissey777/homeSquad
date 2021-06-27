@@ -12,11 +12,11 @@ import {
   ResolverInterface,
   Root,
 } from "type-graphql";
-import { title } from "process";
 import { HomeUserLink } from "../entities/HomeUserLink";
 import { FieldError } from "./user";
 import { User } from "../entities/User";
 import { Post } from "../entities/Post";
+import { GroceryItem } from "../entities/GroceryItem";
 
 @ObjectType()
 class HomeResponse {
@@ -63,6 +63,12 @@ export class HomeResolver implements ResolverInterface<Home> {
   async posts(@Root() home: Home, @Ctx() { em }: MyContext) {
     const posts = await em.find(Post, { homeId: home.id });
     return posts;
+  }
+
+  @FieldResolver()
+  async groceryItems(@Root() home: Home, @Ctx() { em }: MyContext) {
+    const groceryItems = await em.find(GroceryItem, { homeId: home.id });
+    return groceryItems;
   }
 
   @Query(() => [Home])
@@ -221,7 +227,7 @@ export class HomeResolver implements ResolverInterface<Home> {
     if (!home) {
       return null;
     }
-    if (typeof title !== "undefined") {
+    if (typeof name !== "undefined") {
       home.name = name;
       await em.persistAndFlush(home);
     }
@@ -260,6 +266,7 @@ export class HomeResolver implements ResolverInterface<Home> {
     await em.nativeDelete(Home, { id });
     await em.nativeDelete(HomeUserLink, { homeId: id });
     await em.nativeDelete(Post, { homeId: id });
+    await em.nativeDelete(GroceryItem, { homeId: id });
     return { success: true };
   }
 }
