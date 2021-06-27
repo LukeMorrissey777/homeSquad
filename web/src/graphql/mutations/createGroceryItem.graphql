@@ -1,0 +1,17 @@
+mutation CreateGroceryItem($homeId: Float!, $item: String!) {
+  createGroceryItem(homeId: $homeId, item: $item) {
+    errors {
+      message
+      field
+    }
+    groceryItem {
+      id
+      item
+      completed
+      author {
+        id
+        username
+      }
+    }
+  }
+}

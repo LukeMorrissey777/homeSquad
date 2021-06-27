@@ -1,0 +1,7 @@
+mutation UpdateGroceryItem($id: Float!, $completed: Boolean!) {
+  updateGroceryItem(id: $id, completed: $completed) {
+    id
+    item
+    completed
+  }
+}

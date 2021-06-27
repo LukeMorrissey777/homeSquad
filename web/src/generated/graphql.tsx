@@ -20,6 +20,23 @@ export type FieldError = {
   message: Scalars['String'];
 };
 
+export type GroceryItem = {
+  __typename?: 'GroceryItem';
+  id: Scalars['Float'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  author?: Maybe<User>;
+  home?: Maybe<Home>;
+  item: Scalars['String'];
+  completed: Scalars['Boolean'];
+};
+
+export type GroceryItemResponse = {
+  __typename?: 'GroceryItemResponse';
+  errors?: Maybe<Array<FieldError>>;
+  groceryItem?: Maybe<GroceryItem>;
+};
+
 export type Home = {
   __typename?: 'Home';
   id: Scalars['Float'];
@@ -27,6 +44,8 @@ export type Home = {
   updatedAt: Scalars['String'];
   owner?: Maybe<User>;
   users?: Maybe<Array<User>>;
+  posts?: Maybe<Array<Post>>;
+  groceryItems?: Maybe<Array<GroceryItem>>;
   name: Scalars['String'];
 };
 
@@ -45,6 +64,11 @@ export type Mutation = {
   leaveHome: SuccessResponse;
   updateHome?: Maybe<Home>;
   deleteHome: SuccessResponse;
+  createPost: PostResponse;
+  deletePost: SuccessResponse;
+  createGroceryItem: GroceryItemResponse;
+  deleteGroceryItem: SuccessResponse;
+  updateGroceryItem?: Maybe<GroceryItem>;
 };
 
 
@@ -81,6 +105,50 @@ export type MutationUpdateHomeArgs = {
 
 export type MutationDeleteHomeArgs = {
   id: Scalars['Float'];
+};
+
+
+export type MutationCreatePostArgs = {
+  homeId: Scalars['Float'];
+  text: Scalars['String'];
+};
+
+
+export type MutationDeletePostArgs = {
+  id: Scalars['Float'];
+};
+
+
+export type MutationCreateGroceryItemArgs = {
+  homeId: Scalars['Float'];
+  item: Scalars['String'];
+};
+
+
+export type MutationDeleteGroceryItemArgs = {
+  id: Scalars['Float'];
+};
+
+
+export type MutationUpdateGroceryItemArgs = {
+  completed?: Maybe<Scalars['Boolean']>;
+  id: Scalars['Float'];
+};
+
+export type Post = {
+  __typename?: 'Post';
+  id: Scalars['Float'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  author?: Maybe<User>;
+  home?: Maybe<Home>;
+  text: Scalars['String'];
+};
+
+export type PostResponse = {
+  __typename?: 'PostResponse';
+  errors?: Maybe<Array<FieldError>>;
+  post?: Maybe<Post>;
 };
 
 export type Query = {
@@ -123,6 +191,30 @@ export type UsernamePasswordInput = {
   password: Scalars['String'];
 };
 
+export type CreateGroceryItemMutationVariables = Exact<{
+  homeId: Scalars['Float'];
+  item: Scalars['String'];
+}>;
+
+
+export type CreateGroceryItemMutation = (
+  { __typename?: 'Mutation' }
+  & { createGroceryItem: (
+    { __typename?: 'GroceryItemResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'message' | 'field'>
+    )>>, groceryItem?: Maybe<(
+      { __typename?: 'GroceryItem' }
+      & Pick<GroceryItem, 'id' | 'item' | 'completed'>
+      & { author?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'username'>
+      )> }
+    )> }
+  ) }
+);
+
 export type CreateHomeMutationVariables = Exact<{
   name: Scalars['String'];
 }>;
@@ -142,6 +234,47 @@ export type CreateHomeMutation = (
   ) }
 );
 
+export type CreatePostMutationVariables = Exact<{
+  homeId: Scalars['Float'];
+  text: Scalars['String'];
+}>;
+
+
+export type CreatePostMutation = (
+  { __typename?: 'Mutation' }
+  & { createPost: (
+    { __typename?: 'PostResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, post?: Maybe<(
+      { __typename?: 'Post' }
+      & Pick<Post, 'id' | 'text'>
+      & { author?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'username'>
+      )> }
+    )> }
+  ) }
+);
+
+export type DeleteGroceryItemMutationVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type DeleteGroceryItemMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteGroceryItem: (
+    { __typename?: 'SuccessResponse' }
+    & Pick<SuccessResponse, 'success'>
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'message' | 'field'>
+    )>> }
+  ) }
+);
+
 export type DeleteHomeMutationVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -150,6 +283,23 @@ export type DeleteHomeMutationVariables = Exact<{
 export type DeleteHomeMutation = (
   { __typename?: 'Mutation' }
   & { deleteHome: (
+    { __typename?: 'SuccessResponse' }
+    & Pick<SuccessResponse, 'success'>
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>> }
+  ) }
+);
+
+export type DeletePostMutationVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type DeletePostMutation = (
+  { __typename?: 'Mutation' }
+  & { deletePost: (
     { __typename?: 'SuccessResponse' }
     & Pick<SuccessResponse, 'success'>
     & { errors?: Maybe<Array<(
@@ -235,6 +385,20 @@ export type RegisterMutation = (
   ) }
 );
 
+export type UpdateGroceryItemMutationVariables = Exact<{
+  id: Scalars['Float'];
+  completed: Scalars['Boolean'];
+}>;
+
+
+export type UpdateGroceryItemMutation = (
+  { __typename?: 'Mutation' }
+  & { updateGroceryItem?: Maybe<(
+    { __typename?: 'GroceryItem' }
+    & Pick<GroceryItem, 'id' | 'item' | 'completed'>
+  )> }
+);
+
 export type HomeQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -271,6 +435,29 @@ export type MeQuery = (
 );
 
 
+export const CreateGroceryItemDocument = gql`
+    mutation CreateGroceryItem($homeId: Float!, $item: String!) {
+  createGroceryItem(homeId: $homeId, item: $item) {
+    errors {
+      message
+      field
+    }
+    groceryItem {
+      id
+      item
+      completed
+      author {
+        id
+        username
+      }
+    }
+  }
+}
+    `;
+
+export function useCreateGroceryItemMutation() {
+  return Urql.useMutation<CreateGroceryItemMutation, CreateGroceryItemMutationVariables>(CreateGroceryItemDocument);
+};
 export const CreateHomeDocument = gql`
     mutation CreateHome($name: String!) {
   createHome(name: $name) {
@@ -289,6 +476,43 @@ export const CreateHomeDocument = gql`
 export function useCreateHomeMutation() {
   return Urql.useMutation<CreateHomeMutation, CreateHomeMutationVariables>(CreateHomeDocument);
 };
+export const CreatePostDocument = gql`
+    mutation CreatePost($homeId: Float!, $text: String!) {
+  createPost(homeId: $homeId, text: $text) {
+    errors {
+      field
+      message
+    }
+    post {
+      id
+      text
+      author {
+        id
+        username
+      }
+    }
+  }
+}
+    `;
+
+export function useCreatePostMutation() {
+  return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument);
+};
+export const DeleteGroceryItemDocument = gql`
+    mutation DeleteGroceryItem($id: Float!) {
+  deleteGroceryItem(id: $id) {
+    success
+    errors {
+      message
+      field
+    }
+  }
+}
+    `;
+
+export function useDeleteGroceryItemMutation() {
+  return Urql.useMutation<DeleteGroceryItemMutation, DeleteGroceryItemMutationVariables>(DeleteGroceryItemDocument);
+};
 export const DeleteHomeDocument = gql`
     mutation DeleteHome($id: Float!) {
   deleteHome(id: $id) {
@@ -303,6 +527,21 @@ export const DeleteHomeDocument = gql`
 
 export function useDeleteHomeMutation() {
   return Urql.useMutation<DeleteHomeMutation, DeleteHomeMutationVariables>(DeleteHomeDocument);
+};
+export const DeletePostDocument = gql`
+    mutation DeletePost($id: Float!) {
+  deletePost(id: $id) {
+    errors {
+      field
+      message
+    }
+    success
+  }
+}
+    `;
+
+export function useDeletePostMutation() {
+  return Urql.useMutation<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument);
 };
 export const JoinHomeDocument = gql`
     mutation JoinHome($name: String!) {
@@ -372,6 +611,19 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const UpdateGroceryItemDocument = gql`
+    mutation UpdateGroceryItem($id: Float!, $completed: Boolean!) {
+  updateGroceryItem(id: $id, completed: $completed) {
+    id
+    item
+    completed
+  }
+}
+    `;
+
+export function useUpdateGroceryItemMutation() {
+  return Urql.useMutation<UpdateGroceryItemMutation, UpdateGroceryItemMutationVariables>(UpdateGroceryItemDocument);
 };
 export const HomeDocument = gql`
     query Home($id: Float!) {

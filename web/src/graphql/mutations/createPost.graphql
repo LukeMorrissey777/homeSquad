@@ -1,0 +1,16 @@
+mutation CreatePost($homeId: Float!, $text: String!) {
+  createPost(homeId: $homeId, text: $text) {
+    errors {
+      field
+      message
+    }
+    post {
+      id
+      text
+      author {
+        id
+        username
+      }
+    }
+  }
+}

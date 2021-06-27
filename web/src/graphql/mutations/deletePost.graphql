@@ -1,0 +1,9 @@
+mutation DeletePost($id: Float!) {
+  deletePost(id: $id) {
+    errors {
+      field
+      message
+    }
+    success
+  }
+}

@@ -7,6 +7,7 @@ import { stringify } from "querystring";
 import React, { useState } from "react";
 import { useMeQuery, useHomeQuery, HomeQuery } from "../generated/graphql";
 import { MinusHomeModal } from "./MinusHomeModal";
+import { PostColumn } from "./PostColumn";
 
 interface HomeBodyProps {
   userId: number | null;
@@ -50,6 +51,14 @@ export const HomeBody: React.FC<HomeBodyProps> = ({ homeId, userId }) => {
           {deleteButton}
         </Flex>
       </Box>
+      <Flex>
+        <Box flex={1} bg="teal.100">
+          <PostColumn homeId={homeId} />
+        </Box>
+        <Box flex={1} bg="teal.100">
+          World
+        </Box>
+      </Flex>
     </>
   );
 };
