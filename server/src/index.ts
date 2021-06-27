@@ -12,6 +12,7 @@ import redis from "redis";
 import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
+import { PostResolver } from "./resolvers/post";
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
@@ -49,7 +50,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, HomeResolver, UserResolver],
+      resolvers: [HelloResolver, HomeResolver, UserResolver, PostResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({ em: orm.em, req, res }),

@@ -4,13 +4,15 @@ import { MikroORM } from "@mikro-orm/core";
 import path from "path";
 import { User } from "./entities/User";
 import { HomeUserLink } from "./entities/HomeUserLink";
+import { GroceryItem } from "./entities/GroceryItem";
+import { Post } from "./entities/Post";
 
 export default {
   migrations: {
     path: path.join(__dirname, "./migrations"), // path to the folder with migrations
     pattern: /^[\w-]+\d+\.[jt]s$/,
   },
-  entities: [Home, User, HomeUserLink],
+  entities: [Home, User, HomeUserLink, Post, GroceryItem],
   dbName: "homesquad_db",
   user: "postgres",
   password: "postgres",

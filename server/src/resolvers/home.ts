@@ -16,6 +16,7 @@ import { title } from "process";
 import { HomeUserLink } from "../entities/HomeUserLink";
 import { FieldError } from "./user";
 import { User } from "../entities/User";
+import { Post } from "../entities/Post";
 
 @ObjectType()
 class HomeResponse {
@@ -27,7 +28,7 @@ class HomeResponse {
 }
 
 @ObjectType()
-class SuccessResponse {
+export class SuccessResponse {
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[];
 
@@ -56,6 +57,12 @@ export class HomeResolver implements ResolverInterface<Home> {
     }
     const users = await em.find(User, userIds);
     return users;
+  }
+
+  @FieldResolver()
+  async posts(@Root() home: Home, @Ctx() { em }: MyContext) {
+    const posts = await em.find(Post, { homeId: home.id });
+    return posts;
   }
 
   @Query(() => [Home])
@@ -252,6 +259,7 @@ export class HomeResolver implements ResolverInterface<Home> {
     }
     await em.nativeDelete(Home, { id });
     await em.nativeDelete(HomeUserLink, { homeId: id });
+    await em.nativeDelete(Post, { homeId: id });
     return { success: true };
   }
 }

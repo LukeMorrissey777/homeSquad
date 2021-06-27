@@ -1,11 +1,11 @@
 import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
 import { Field, ObjectType } from "type-graphql";
-import { Post } from "./Post";
+import { Home } from "./Home";
 import { User } from "./User";
 
 @ObjectType()
 @Entity()
-export class Home {
+export class GroceryItem {
   @Field()
   @PrimaryKey()
   id!: number;
@@ -19,18 +19,22 @@ export class Home {
   updatedAt: Date = new Date();
 
   @Property()
-  ownerId!: number;
+  authorId!: number;
 
   @Field(() => User, { nullable: true })
-  owner!: User | null;
+  author!: User | null;
 
-  @Field(() => [User], { nullable: true })
-  users: User[] | null;
+  @Property()
+  homeId!: number;
 
-  @Field(() => [Post], { nullable: true })
-  posts: Post[] | null;
+  @Field(() => Home, { nullable: true })
+  home!: Home | null;
 
   @Field()
-  @Property({ unique: true })
-  name!: string;
+  @Property()
+  item!: string;
+
+  @Field()
+  @Property()
+  completed: boolean = false;
 }
