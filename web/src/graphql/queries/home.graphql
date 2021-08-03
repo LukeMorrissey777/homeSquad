@@ -10,5 +10,22 @@ query Home($id: Float!) {
       id
       username
     }
+    posts{
+      id
+      text
+      author{
+				id
+        username
+      }
+    }
+    groceryItems{
+      id
+      author{
+        id
+        username
+      }
+      item
+      completed
+    }
   }
 }

@@ -98,7 +98,7 @@ export const NavBar: React.FC<NavBarProps> = ({ setHomeId, setUserId }) => {
     );
   }
   return (
-    <Box bg="teal.700" p={2.5} ml={"auto"}>
+    <Box bg="teal.700" p={2.5} ml={"auto"} h="7vh">
       <Flex>
         <Center>
           <Text ml={5} fontSize="large" fontWeight="bold" color="white">

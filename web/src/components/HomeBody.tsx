@@ -1,64 +1,154 @@
 import { Button, IconButton } from "@chakra-ui/button";
 import Icon from "@chakra-ui/icon";
 import { AddIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
-import { Box, Center, Flex, Spacer, Text } from "@chakra-ui/layout";
+import { Box, Center, Flex, Spacer, Text, Heading } from "@chakra-ui/layout";
 import { SP } from "next/dist/next-server/lib/utils";
 import { stringify } from "querystring";
 import React, { useState } from "react";
 import { useMeQuery, useHomeQuery, HomeQuery } from "../generated/graphql";
 import { MinusHomeModal } from "./MinusHomeModal";
-import { PostColumn } from "./PostColumn";
+import { Col, Container, Row } from "react-bootstrap";
+import styles from "../style/homeBody.module.css";
+import { Textarea } from "@chakra-ui/textarea";
 
 interface HomeBodyProps {
   userId: number | null;
   homeId: number | null;
 }
+const dummyData = [
+  { text: "Post1", author: "ME" },
+  { text: "Post2", author: "ME" },
+  { text: "Post3", author: "ME" },
+  { text: "Post4", author: "ME" },
+  { text: "Post5", author: "ME" },
+];
+interface FeatureArgs {
+  text: string;
+  author: string;
+}
 
 export const HomeBody: React.FC<HomeBodyProps> = ({ homeId, userId }) => {
-  let header = null;
-  let deleteButton = null;
 
-  if (!userId) {
-    header = <>Not Logged In</>;
-  } else if (!homeId) {
-    header = <>Please choose a home to view</>;
-  } else {
-    const [{ data: homeData, fetching: homeFetching }] = useHomeQuery({
-      variables: { id: homeId },
-    });
-    if (homeFetching) {
-      header = <>Loading ...</>;
-    } else if (!homeData?.home) {
-      header = <>No home</>;
-    } else {
-      header = <>{homeData.home.name}</>;
-      deleteButton = <MinusHomeModal userId={userId} home={homeData.home} />;
-    }
+
+
+  
+  function Feature({ text, author, ...rest }: FeatureArgs) {
+    return (
+      <Center>
+        <Box
+          w="89%"
+          backgroundColor="white"
+          p={4}
+          m={4}
+          shadow="md"
+          borderWidth="0px"
+          {...rest}
+        >
+          <Heading fontSize="xl">{text}</Heading>
+          <Text mt={3}>{author}</Text>
+        </Box>
+      </Center>
+    );
   }
-
   return (
-    <>
-      <Box bg="teal.900" p={8} ml={"auto"}></Box>
-      <Box bg="teal.700" p={4} ml={"auto"}>
-        <Flex>
-          <Spacer />
-          <Center>
-            <Text fontSize="3xl" fontWeight="bold" color="white">
-              {header}
-            </Text>
-          </Center>
-          <Spacer />
-          {deleteButton}
-        </Flex>
-      </Box>
-      <Flex>
-        <Box flex={1} bg="teal.100">
-          <PostColumn homeId={homeId} />
-        </Box>
-        <Box flex={1} bg="teal.100">
-          World
-        </Box>
-      </Flex>
-    </>
+    <div id="bottomPanelTable" className={styles.bottomPanelTable}>
+      <Container fluid>
+        <Row>
+          <Col>
+            <div id="postPanel" className={styles.postPanel}>
+              <Container>
+                <Row>
+                  <Center h="8vh" w="100%">
+                    <Text fontSize="3xl" fontWeight="bold" color="teal.900">
+                      Posts
+                    </Text>
+                  </Center>
+                </Row>
+                <Row>
+                  <div
+                    id="makeShiftLine"
+                    className={styles.makeShiftLine}
+                  ></div>
+                </Row>
+                <Row>
+                  <div id="postCards" className={styles.postCards}>
+                    {dummyData.map((data) => {
+                      return Feature({
+                        text: data.text,
+                        author: data.author,
+                      });
+                    })}
+                  </div>
+                </Row>
+
+                <Row style={{ width: "100%" }}>
+                  <Box style={{ width: "100%" }}>
+                    <Center>
+                      <Textarea
+                        placeholder="Create a new post!"
+                        backgroundColor="white"
+                        onChange={(e) => console.log}
+                        m={2}
+                      />
+                    </Center>
+                    <Flex>
+                      <Spacer />
+                      <Button colorScheme="teal">Post</Button>
+                    </Flex>
+                  </Box>
+                </Row>
+              </Container>
+            </div>
+          </Col>
+
+          <Col>
+            <div id="postPanel" className={styles.postPanel}>
+              <Container>
+                <Row>
+                  <Center h="8vh" w="100%">
+                    <Text fontSize="3xl" fontWeight="bold" color="teal.900">
+                      Grocery List
+                    </Text>
+                  </Center>
+                </Row>
+                <Row>
+                  <div
+                    id="makeShiftLine"
+                    className={styles.makeShiftLine}
+                  ></div>
+                </Row>
+                <Row>
+                  <div id="postCards" className={styles.postCards}>
+                    {dummyData.map((data) => {
+                      return Feature({
+                        text: data.text,
+                        author: data.author,
+                      });
+                    })}
+                  </div>
+                </Row>
+
+                <Row style={{ width: "100%" }}>
+                  <Box style={{ width: "100%" }}>
+                    <Center>
+                      <Textarea
+                        placeholder="Add an item to the grocery list!"
+                        backgroundColor="white"
+                        onChange={(e) => console.log}
+                        m={2}
+                      />
+                    </Center>
+                    <Flex>
+                      <Spacer />
+                      <Button colorScheme="teal">Add</Button>
+                    </Flex>
+                  </Box>
+                </Row>
+              </Container>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 };

@@ -415,6 +415,20 @@ export type HomeQuery = (
     )>, users?: Maybe<Array<(
       { __typename?: 'User' }
       & Pick<User, 'id' | 'username'>
+    )>>, posts?: Maybe<Array<(
+      { __typename?: 'Post' }
+      & Pick<Post, 'id' | 'text'>
+      & { author?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'username'>
+      )> }
+    )>>, groceryItems?: Maybe<Array<(
+      { __typename?: 'GroceryItem' }
+      & Pick<GroceryItem, 'id' | 'item' | 'completed'>
+      & { author?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'username'>
+      )> }
     )>> }
   )> }
 );
@@ -637,6 +651,23 @@ export const HomeDocument = gql`
     users {
       id
       username
+    }
+    posts {
+      id
+      text
+      author {
+        id
+        username
+      }
+    }
+    groceryItems {
+      id
+      author {
+        id
+        username
+      }
+      item
+      completed
     }
   }
 }
