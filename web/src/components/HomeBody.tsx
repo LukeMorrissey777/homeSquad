@@ -14,6 +14,8 @@ import { Textarea } from "@chakra-ui/textarea";
 interface HomeBodyProps {
   userId: number | null;
   homeId: number | null;
+  homeData: HomeQuery | undefined;
+  homeFetching: boolean;
 }
 const dummyData = [
   { text: "Post1", author: "ME" },
@@ -27,11 +29,15 @@ interface FeatureArgs {
   author: string;
 }
 
-export const HomeBody: React.FC<HomeBodyProps> = ({ homeId, userId }) => {
+export const HomeBody: React.FC<HomeBodyProps> = ({
+  homeId,
+  userId,
+  homeData,
+  homeFetching,
+}) => {
+  const posts = homeData?.home?.posts;
+  const groceryItems = homeData?.home?.groceryItems;
 
-
-
-  
   function Feature({ text, author, ...rest }: FeatureArgs) {
     return (
       <Center>
@@ -50,6 +56,47 @@ export const HomeBody: React.FC<HomeBodyProps> = ({ homeId, userId }) => {
       </Center>
     );
   }
+  const renderGrocery = () => {
+    if (!groceryItems) {
+      return (
+        <div id="postCards" className={styles.postCards}>
+          Nada
+        </div>
+      );
+    }
+    return (
+      <div id="postCards" className={styles.postCards}>
+        {groceryItems.map((item) => {
+          return Feature({
+            text: item.item,
+            author: item.author?.username ?? "",
+          });
+        })}
+      </div>
+    );
+  };
+
+  const renderPosts = () => {
+    if (!posts) {
+      return (
+        <div id="postCards" className={styles.postCards}>
+          Nada
+        </div>
+      );
+    }
+
+    return (
+      <div id="postCards" className={styles.postCards}>
+        {posts.map((post) => {
+          return Feature({
+            text: post.text,
+            author: post.author?.username ?? "",
+          });
+        })}
+      </div>
+    );
+  };
+
   return (
     <div id="bottomPanelTable" className={styles.bottomPanelTable}>
       <Container fluid>
@@ -71,14 +118,15 @@ export const HomeBody: React.FC<HomeBodyProps> = ({ homeId, userId }) => {
                   ></div>
                 </Row>
                 <Row>
-                  <div id="postCards" className={styles.postCards}>
+                  {renderPosts()}
+                  {/* <div id="postCards" className={styles.postCards}>
                     {dummyData.map((data) => {
                       return Feature({
                         text: data.text,
                         author: data.author,
                       });
                     })}
-                  </div>
+                  </div> */}
                 </Row>
 
                 <Row style={{ width: "100%" }}>
@@ -118,14 +166,15 @@ export const HomeBody: React.FC<HomeBodyProps> = ({ homeId, userId }) => {
                   ></div>
                 </Row>
                 <Row>
-                  <div id="postCards" className={styles.postCards}>
+                  {renderGrocery()}
+                  {/* <div id="postCards" className={styles.postCards}>
                     {dummyData.map((data) => {
                       return Feature({
                         text: data.text,
                         author: data.author,
                       });
                     })}
-                  </div>
+                  </div> */}
                 </Row>
 
                 <Row style={{ width: "100%" }}>

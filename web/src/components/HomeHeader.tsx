@@ -1,15 +1,17 @@
 import { Box, Flex, Text } from "@chakra-ui/layout";
 import { Spacer, Center } from "@chakra-ui/react";
 import React from "react";
-import { useHomeQuery } from "../generated/graphql";
+import { HomeQuery } from "../generated/graphql";
 import { MinusHomeModal } from "./MinusHomeModal";
 
 interface HomeHeaderProps {
   userId: number | null;
   homeId: number | null;
+  homeData: HomeQuery | undefined;
+  homeFetching: boolean;
 }
 
-export const HomeHeader: React.FC<HomeHeaderProps> = ({ userId, homeId }) => {
+export const HomeHeader: React.FC<HomeHeaderProps> = ({ userId, homeId, homeData, homeFetching }) => {
   let header = null;
   let deleteButton = null;
 
@@ -18,9 +20,6 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({ userId, homeId }) => {
   } else if (!homeId) {
     header = <>Please choose a home to view</>;
   } else {
-    const [{ data: homeData, fetching: homeFetching }] = useHomeQuery({
-      variables: { id: homeId },
-    });
     if (homeFetching) {
       header = <>Loading ...</>;
     } else if (!homeData?.home) {

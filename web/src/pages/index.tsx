@@ -9,25 +9,9 @@ import { HomeQuery, useHomeQuery } from "../generated/graphql";
 const Index = () => {
   const [homeId, setHomeId] = useState<number | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
-  // const [home, setHome] = useState<HomeQuery | undefined>(undefined);
-
-  // const setHomeWrapper = (id: any) => {
-  //   setHomeId(id);
-  //   const [{ data: homeData, fetching: homeFetching }] = useHomeQuery({
-  //     variables: { id },
-  //   });
-  //   setHome(homeData);
-  // };
-
-  // useEffect(() => {
-  //   if (!homeId) {
-  //     return;
-  //   }
-  //   const [{ data: homeData, fetching: homeFetching }] = useHomeQuery({
-  //     variables: { id: homeId },
-  //   });
-  //   setHome(homeData);
-  // }, [homeId]);
+  const [{ data: homeData, fetching: homeFetching }] = useHomeQuery({
+    variables: { id: homeId ?? -1 },
+  });
 
   return (
     <>
@@ -42,9 +26,19 @@ const Index = () => {
       <Box minH="100vh" backgroundColor="teal.100">
         <Box position="sticky" top="0">
           <NavBar setHomeId={setHomeId} setUserId={setUserId} />
-          <HomeHeader homeId={homeId} userId={userId} />
+          <HomeHeader
+            homeId={homeId}
+            userId={userId}
+            homeData={homeData}
+            homeFetching={homeFetching}
+          />
         </Box>
-        <HomeBody homeId={homeId} userId={userId} />
+        <HomeBody
+          homeId={homeId}
+          userId={userId}
+          homeData={homeData}
+          homeFetching={homeFetching}
+        />
       </Box>
     </>
   );
