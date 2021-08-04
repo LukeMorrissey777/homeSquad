@@ -24,7 +24,7 @@ const Index = () => {
         />
       </Head>
       <Box minH="100vh" backgroundColor="teal.100">
-        <Box position="sticky" top="0">
+        <Box top="0">
           <NavBar setHomeId={setHomeId} setUserId={setUserId} />
           <HomeHeader
             homeId={homeId}

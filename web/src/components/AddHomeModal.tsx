@@ -152,9 +152,11 @@ export const AddHomeModal: React.FC<AddHomeModalProps> = ({}) => {
                 {options.map((value) => {
                   const radio = getRadioProps({ value });
                   return (
-                    <RadioCard key={value} {...radio}>
-                      {value}
-                    </RadioCard>
+                    <Center>
+                      <RadioCard key={value} {...radio}>
+                        {value}
+                      </RadioCard>
+                    </Center>
                   );
                 })}
               </HStack>

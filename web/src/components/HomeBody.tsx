@@ -137,6 +137,7 @@ export const HomeBody: React.FC<HomeBodyProps> = ({
                         backgroundColor="white"
                         onChange={(e) => console.log}
                         m={2}
+                        resize="none"
                       />
                     </Center>
                     <Flex>
@@ -177,14 +178,15 @@ export const HomeBody: React.FC<HomeBodyProps> = ({
                   </div> */}
                 </Row>
 
-                <Row style={{ width: "100%" }}>
-                  <Box style={{ width: "100%" }}>
+                <Row style={{ width: "100%", height: "100vh" }}>
+                  <Box style={{ width: "100%", height: "100%" }}>
                     <Center>
                       <Textarea
                         placeholder="Add an item to the grocery list!"
                         backgroundColor="white"
                         onChange={(e) => console.log}
                         m={2}
+                        resize="none"
                       />
                     </Center>
                     <Flex>
