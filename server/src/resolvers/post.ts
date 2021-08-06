@@ -55,6 +55,26 @@ export class PostResolver implements ResolverInterface<Post> {
         ],
       };
     }
+    if (homeId == -1) {
+      return {
+        errors: [
+          {
+            field: "homeId",
+            message: "You must sign in to a home to post",
+          },
+        ],
+      };
+    }
+    if (text == "") {
+      return {
+        errors: [
+          {
+            field: "text",
+            message: "Posts cannot be empty",
+          },
+        ],
+      };
+    }
     const post = em.create(Post, {
       homeId,
       text,

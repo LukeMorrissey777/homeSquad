@@ -4,11 +4,15 @@ import React from "react";
 import { Provider, createClient, dedupExchange, fetchExchange } from "urql";
 import {
   CreateHomeMutation,
+  CreatePostMutation,
+  HomeQuery,
   JoinHomeMutation,
   LoginMutation,
   MeDocument,
   MeQuery,
   RegisterMutation,
+  HomeDocument,
+  CreateGroceryItemMutation,
 } from "../generated/graphql";
 
 import theme from "../theme";
@@ -101,6 +105,64 @@ const client = createClient({
                   });
                   return query;
                 }
+              }
+            );
+          },
+          createPost: (result, args, cache, info) => {
+            betterUpdateQuery<CreatePostMutation, HomeQuery>(
+              cache,
+              { query: HomeDocument, variables: { id: args.homeId } },
+              result,
+              (result, query) => {
+                if (
+                  result.createPost.errors ||
+                  !query.home?.posts ||
+                  !result.createPost.post?.author?.id
+                ) {
+                  return query;
+                } else {
+                  const post = result.createPost.post;
+                  if (post.author) {
+                    console.log("Added post");
+                    query.home.posts.push({
+                      id: post.id,
+                      text: post.text,
+                      author: {
+                        id: post.author.id,
+                        username: post.author.username,
+                      },
+                    });
+                  }
+
+                  return query;
+                }
+              }
+            );
+          },
+          createGroceryItem: (result, args, cache, info) => {
+            betterUpdateQuery<CreateGroceryItemMutation, HomeQuery>(
+              cache,
+              { query: HomeDocument, variables: { id: args.homeId } },
+              result,
+              (result, query) => {
+                if (
+                  result.createGroceryItem.errors ||
+                  !query.home?.groceryItems ||
+                  !result.createGroceryItem.groceryItem?.author?.id
+                ) {
+                  return query;
+                }
+                query.home?.groceryItems.push({
+                  id: result.createGroceryItem.groceryItem?.id,
+                  completed: result.createGroceryItem.groceryItem?.completed,
+                  item: result.createGroceryItem.groceryItem?.item,
+                  author: {
+                    id: result.createGroceryItem.groceryItem?.author?.id,
+                    username:
+                      result.createGroceryItem.groceryItem?.author?.username,
+                  },
+                });
+                return query;
               }
             );
           },

@@ -4,12 +4,20 @@ import { AddIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
 import { Box, Center, Flex, Spacer, Text, Heading } from "@chakra-ui/layout";
 import { SP } from "next/dist/next-server/lib/utils";
 import { stringify } from "querystring";
-import React, { useState } from "react";
-import { useMeQuery, useHomeQuery, HomeQuery } from "../generated/graphql";
+import React, { useEffect, useState } from "react";
+import {
+  useMeQuery,
+  useHomeQuery,
+  HomeQuery,
+  useCreatePostMutation,
+  useCreateGroceryItemMutation,
+} from "../generated/graphql";
 import { MinusHomeModal } from "./MinusHomeModal";
 import { Col, Container, Row } from "react-bootstrap";
 import styles from "../style/homeBody.module.css";
 import { Textarea } from "@chakra-ui/textarea";
+import { AlertIcon, Alert } from "@chakra-ui/alert";
+import { CloseButton } from "@chakra-ui/close-button";
 
 interface HomeBodyProps {
   userId: number | null;
@@ -35,6 +43,18 @@ export const HomeBody: React.FC<HomeBodyProps> = ({
   homeData,
   homeFetching,
 }) => {
+  const [groceryAlertMessage, setGroceryAlertMessage] = useState(<></>);
+  const [postAlertMessage, setPostAlertMessage] = useState(<></>);
+  const [postText, setPostText] = useState("");
+  const [groceryText, setGroceryText] = useState("");
+  const [, createPost] = useCreatePostMutation();
+  const [, createGroceryItem] = useCreateGroceryItemMutation();
+  useEffect(() => {
+    setGroceryAlertMessage(<></>);
+    setPostAlertMessage(<></>);
+    setPostText("");
+    setGroceryText("");
+  }, [homeId]);
   const posts = homeData?.home?.posts;
   const groceryItems = homeData?.home?.groceryItems;
 
@@ -56,6 +76,103 @@ export const HomeBody: React.FC<HomeBodyProps> = ({
       </Center>
     );
   }
+  const handleGroceryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setGroceryText(e.target.value);
+  };
+  const handlePostChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setPostText(e.target.value);
+  };
+
+  const handlePostClick = async () => {
+    const postResponse = await createPost({
+      homeId: homeId ?? -1,
+      text: postText,
+    });
+    if (postResponse.data?.createPost.errors) {
+      setPostAlertMessage(
+        <>
+          {postResponse.data.createPost.errors.map((error) => {
+            return (
+              <Alert status="error" variant="solid" height="10" mr="2">
+                <AlertIcon />
+                {error.message}
+                <CloseButton
+                  position="absolute"
+                  right="2"
+                  onClick={handlePostCloseButtonClicked}
+                />
+              </Alert>
+            );
+          })}
+        </>
+      );
+    } else {
+      setPostText("");
+      setPostAlertMessage(
+        <>
+          <Alert status="success" variant="solid" height="10" mr="2">
+            <AlertIcon />
+            Post added successfully
+            <CloseButton
+              position="absolute"
+              right="2"
+              onClick={handlePostCloseButtonClicked}
+            />
+          </Alert>
+        </>
+      );
+      console.log(homeData?.home?.posts);
+    }
+  };
+  const handleGroceryItemClick = async () => {
+    const groceryResponse = await createGroceryItem({
+      homeId: homeId ?? -1,
+      item: groceryText,
+    });
+    console.log(groceryResponse);
+    if (groceryResponse.data?.createGroceryItem.errors) {
+      setGroceryAlertMessage(
+        <>
+          {groceryResponse.data.createGroceryItem.errors.map((error) => {
+            return (
+              <Alert status="error" variant="solid" height="10" mr="2">
+                <AlertIcon />
+                {error.message}
+                <CloseButton
+                  position="absolute"
+                  right="2"
+                  onClick={handleGroceryCloseButtonClicked}
+                />
+              </Alert>
+            );
+          })}
+        </>
+      );
+    } else {
+      setGroceryText("");
+      setGroceryAlertMessage(
+        <>
+          <Alert status="success" variant="solid" height="10" mr="2">
+            <AlertIcon />
+            Grocery Item added successfully
+            <CloseButton
+              position="absolute"
+              right="2"
+              onClick={handleGroceryCloseButtonClicked}
+            />
+          </Alert>
+        </>
+      );
+    }
+  };
+
+  const handlePostCloseButtonClicked = () => {
+    setPostAlertMessage(<></>);
+  };
+  const handleGroceryCloseButtonClicked = () => {
+    setGroceryAlertMessage(<></>);
+  };
+
   const renderGrocery = () => {
     if (!groceryItems) {
       return (
@@ -135,14 +252,19 @@ export const HomeBody: React.FC<HomeBodyProps> = ({
                       <Textarea
                         placeholder="Create a new post!"
                         backgroundColor="white"
-                        onChange={(e) => console.log}
+                        onChange={handlePostChange}
                         m={2}
+                        value={postText}
                         resize="none"
                       />
                     </Center>
+
                     <Flex>
+                      {postAlertMessage}
                       <Spacer />
-                      <Button colorScheme="teal">Post</Button>
+                      <Button colorScheme="teal" onClick={handlePostClick}>
+                        Post
+                      </Button>
                     </Flex>
                   </Box>
                 </Row>
@@ -184,14 +306,21 @@ export const HomeBody: React.FC<HomeBodyProps> = ({
                       <Textarea
                         placeholder="Add an item to the grocery list!"
                         backgroundColor="white"
-                        onChange={(e) => console.log}
+                        onChange={handleGroceryChange}
                         m={2}
                         resize="none"
+                        value={groceryText}
                       />
                     </Center>
                     <Flex>
+                      {groceryAlertMessage}
                       <Spacer />
-                      <Button colorScheme="teal">Add</Button>
+                      <Button
+                        colorScheme="teal"
+                        onClick={handleGroceryItemClick}
+                      >
+                        Add
+                      </Button>
                     </Flex>
                   </Box>
                 </Row>

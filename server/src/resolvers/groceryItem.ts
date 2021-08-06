@@ -55,6 +55,26 @@ export class GroceryItemResolver implements ResolverInterface<GroceryItem> {
         ],
       };
     }
+    if (homeId == -1) {
+      return {
+        errors: [
+          {
+            field: "homeId",
+            message: "You must sign in to a home to post",
+          },
+        ],
+      };
+    }
+    if (item == "") {
+      return {
+        errors: [
+          {
+            field: "item",
+            message: "Grocery Items cannot be empty",
+          },
+        ],
+      };
+    }
     const groceryItem = em.create(GroceryItem, {
       homeId,
       authorId: req.session.userId,

@@ -96,6 +96,16 @@ export class HomeResolver implements ResolverInterface<Home> {
         ],
       };
     }
+    if (name.length < 5) {
+      return {
+        errors: [
+          {
+            field: "name",
+            message: "Names of homes must be at least 5 characters long",
+          },
+        ],
+      };
+    }
     const home = em.create(Home, { name, ownerId: req.session.userId });
     try {
       await em.persistAndFlush(home);
