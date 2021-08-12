@@ -18,6 +18,8 @@ import styles from "../style/homeBody.module.css";
 import { Textarea } from "@chakra-ui/textarea";
 import { AlertIcon, Alert } from "@chakra-ui/alert";
 import { CloseButton } from "@chakra-ui/close-button";
+import { PostCard } from "./PostCard";
+import { GroceryCard } from "./GroceryCard";
 
 interface HomeBodyProps {
   userId: number | null;
@@ -184,10 +186,14 @@ export const HomeBody: React.FC<HomeBodyProps> = ({
     return (
       <div id="postCards" className={styles.postCards}>
         {groceryItems.map((item) => {
-          return Feature({
-            text: item.item,
-            author: item.author?.username ?? "",
-          });
+          return (
+            <GroceryCard
+              completed={item.completed}
+              groceryId={item.id}
+              item={item.item}
+              author={item.author?.username ?? ""}
+            />
+          );
         })}
       </div>
     );
@@ -205,10 +211,13 @@ export const HomeBody: React.FC<HomeBodyProps> = ({
     return (
       <div id="postCards" className={styles.postCards}>
         {posts.map((post) => {
-          return Feature({
-            text: post.text,
-            author: post.author?.username ?? "",
-          });
+          return (
+            <PostCard
+              postId={post.id}
+              text={post.text}
+              author={post.author?.username ?? ""}
+            />
+          );
         })}
       </div>
     );
