@@ -15,6 +15,7 @@ import {
   CreateGroceryItemMutation,
   DeleteGroceryItemMutation,
   DeletePostMutation,
+  UpdateGroceryItemMutation,
 } from "../generated/graphql";
 
 import theme from "../theme";
@@ -202,13 +203,42 @@ const client = createClient({
                 if (result.deletePost.errors || !query.home?.posts) {
                   return query;
                 }
-                const groceryIndex = query.home?.posts?.findIndex((element) => {
+                const postIndex = query.home?.posts?.findIndex((element) => {
                   return element.id == args.id;
                 });
                 query.home.posts = query.home.posts.splice(
-                  groceryIndex,
-                  groceryIndex
+                  postIndex,
+                  postIndex
                 );
+                return query;
+              }
+            );
+          },
+          updateGroceryItem: (result, args, cache, info) => {
+            betterUpdateQuery<UpdateGroceryItemMutation, HomeQuery>(
+              cache,
+              { query: HomeDocument, variables: { id: args.homeId } },
+              result,
+              (result, query) => {
+                const groceryIndex = query.home?.groceryItems?.findIndex(
+                  (element) => {
+                    return element.id == args.id;
+                  }
+                );
+
+                if (
+                  !result.updateGroceryItem ||
+                  typeof groceryIndex === "undefined" ||
+                  !query.home?.groceryItems
+                ) {
+                  return query;
+                }
+
+                query.home.groceryItems[groceryIndex].completed =
+                  result.updateGroceryItem?.completed;
+
+                console.log(query);
+
                 return query;
               }
             );

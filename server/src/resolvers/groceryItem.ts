@@ -149,10 +149,14 @@ export class GroceryItemResolver implements ResolverInterface<GroceryItem> {
   @Mutation(() => GroceryItem, { nullable: true })
   async updateGroceryItem(
     @Arg("id") id: number,
+    @Arg("homeId") homeId: number,
     @Arg("completed", () => Boolean, { nullable: true }) completed: boolean,
     @Ctx() { em }: MyContext
   ): Promise<GroceryItem | null> {
     const groceryItem = await em.findOne(GroceryItem, { id });
+    if (homeId == -1) {
+      return null;
+    }
     if (!groceryItem) {
       return null;
     }

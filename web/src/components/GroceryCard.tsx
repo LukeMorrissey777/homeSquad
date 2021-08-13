@@ -1,9 +1,11 @@
-import { IconButton } from "@chakra-ui/button";
+import { Button, IconButton } from "@chakra-ui/button";
 import { Checkbox } from "@chakra-ui/checkbox";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { Box, Center, Heading, HStack, Spacer, Text } from "@chakra-ui/layout";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useUpdateGroceryItemMutation } from "../generated/graphql";
 import { DeleteItemModal } from "./DeleteItemModal";
+import { UpdateGroceryItem } from "./UpdateGroceryItem";
 
 interface GroceryCardProps {
   homeId: number;
@@ -21,9 +23,19 @@ export const GroceryCard: React.FC<GroceryCardProps> = ({
   completed,
 }) => {
   const [completedChecked, setCompletedChecked] = useState(completed);
+  const [completedChanged, setCompletedChanged] = useState(false);
+
+  useEffect(() => {
+    setCompletedChanged(false);
+  }, [completed]);
 
   const handleClickChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCompletedChecked(e.target.checked);
+    if (e.target.checked == completed) {
+      setCompletedChanged(false);
+    } else {
+      setCompletedChanged(true);
+    }
   };
   const renderHeading = () => {
     if (completedChecked) {
@@ -52,6 +64,12 @@ export const GroceryCard: React.FC<GroceryCardProps> = ({
           </Box>
           <Spacer />
           <Center>
+            <UpdateGroceryItem
+              completedChanged={completedChanged}
+              groceryId={groceryId}
+              homeId={homeId}
+              completed={completedChecked}
+            />
             <Checkbox
               size="lg"
               m={5}

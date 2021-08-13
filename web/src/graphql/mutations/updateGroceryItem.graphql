@@ -1,5 +1,5 @@
-mutation UpdateGroceryItem($id: Float!, $completed: Boolean!) {
-  updateGroceryItem(id: $id, completed: $completed) {
+mutation UpdateGroceryItem($id: Float!, $completed: Boolean!, $homeId: Float!) {
+  updateGroceryItem(id: $id, completed: $completed, homeId: $homeId) {
     id
     item
     completed

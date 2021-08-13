@@ -20,6 +20,7 @@ import { AlertIcon, Alert } from "@chakra-ui/alert";
 import { CloseButton } from "@chakra-ui/close-button";
 import { PostCard } from "./PostCard";
 import { GroceryCard } from "./GroceryCard";
+import Head from "next/head";
 
 interface HomeBodyProps {
   userId: number | null;
@@ -60,24 +61,28 @@ export const HomeBody: React.FC<HomeBodyProps> = ({
   const posts = homeData?.home?.posts;
   const groceryItems = homeData?.home?.groceryItems;
 
-  function Feature({ text, author, ...rest }: FeatureArgs) {
+  if (userId == null) {
     return (
-      <Center>
-        <Box
-          w="89%"
-          backgroundColor="white"
-          p={4}
-          m={4}
-          shadow="md"
-          borderWidth="0px"
-          {...rest}
-        >
-          <Heading fontSize="xl">{text}</Heading>
-          <Text mt={3}>{author}</Text>
-        </Box>
-      </Center>
+      <>
+        <Center m={5}>
+          <Spacer />
+          <Heading>Welcome to HomeSquad!</Heading>
+          <Spacer />
+        </Center>
+        <Text fontSize="x-large" ml="5" mr="5" textAlign="center">
+          Homesquad is a tool to let you orgainize the groups you live in.
+          Everyone you live with can join your home and can post stuff for
+          everyone to see and add to a virtual grocery list so you always know
+          what is needed around your home! Sign in or register to get started!
+        </Text>
+      </>
     );
   }
+
+  if (homeId == null) {
+    return <></>;
+  }
+
   const handleGroceryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setGroceryText(e.target.value);
   };

@@ -134,6 +134,7 @@ export type MutationDeleteGroceryItemArgs = {
 
 export type MutationUpdateGroceryItemArgs = {
   completed?: Maybe<Scalars['Boolean']>;
+  homeId: Scalars['Float'];
   id: Scalars['Float'];
 };
 
@@ -392,6 +393,7 @@ export type RegisterMutation = (
 export type UpdateGroceryItemMutationVariables = Exact<{
   id: Scalars['Float'];
   completed: Scalars['Boolean'];
+  homeId: Scalars['Float'];
 }>;
 
 
@@ -631,8 +633,8 @@ export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
 };
 export const UpdateGroceryItemDocument = gql`
-    mutation UpdateGroceryItem($id: Float!, $completed: Boolean!) {
-  updateGroceryItem(id: $id, completed: $completed) {
+    mutation UpdateGroceryItem($id: Float!, $completed: Boolean!, $homeId: Float!) {
+  updateGroceryItem(id: $id, completed: $completed, homeId: $homeId) {
     id
     item
     completed
