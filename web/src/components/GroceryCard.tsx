@@ -3,8 +3,10 @@ import { Checkbox } from "@chakra-ui/checkbox";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { Box, Center, Heading, HStack, Spacer, Text } from "@chakra-ui/layout";
 import React, { useState } from "react";
+import { DeleteItemModal } from "./DeleteItemModal";
 
 interface GroceryCardProps {
+  homeId: number;
   author: string;
   item: string;
   groceryId: number;
@@ -12,6 +14,7 @@ interface GroceryCardProps {
 }
 
 export const GroceryCard: React.FC<GroceryCardProps> = ({
+  homeId,
   groceryId,
   author,
   item,
@@ -55,11 +58,11 @@ export const GroceryCard: React.FC<GroceryCardProps> = ({
               isChecked={completedChecked}
               onChange={handleClickChange}
             />
-            <IconButton
-              size="sm"
-              aria-label="Delete/Leave Home"
-              colorScheme="red"
-              icon={<DeleteIcon />}
+            <DeleteItemModal
+              homeId={homeId}
+              id={groceryId}
+              text={item}
+              type="Grocery Item"
             />
           </Center>
         </HStack>

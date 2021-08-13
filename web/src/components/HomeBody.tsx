@@ -188,6 +188,7 @@ export const HomeBody: React.FC<HomeBodyProps> = ({
         {groceryItems.map((item) => {
           return (
             <GroceryCard
+              homeId={homeId ?? -1}
               completed={item.completed}
               groceryId={item.id}
               item={item.item}
@@ -213,6 +214,7 @@ export const HomeBody: React.FC<HomeBodyProps> = ({
         {posts.map((post) => {
           return (
             <PostCard
+              homeId={homeId ?? -1}
               postId={post.id}
               text={post.text}
               author={post.author?.username ?? ""}

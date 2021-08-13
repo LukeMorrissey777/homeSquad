@@ -91,6 +91,7 @@ export class PostResolver implements ResolverInterface<Post> {
   @Mutation(() => SuccessResponse)
   async deletePost(
     @Arg("id") id: number,
+    @Arg("homeId") homeId: number,
     @Ctx() { req, em }: MyContext
   ): Promise<SuccessResponse> {
     if (!req.session.userId) {
@@ -100,6 +101,17 @@ export class PostResolver implements ResolverInterface<Post> {
           {
             field: "username",
             message: "You are not logged in so you cannot delete a post",
+          },
+        ],
+      };
+    }
+    if (homeId == -1) {
+      return {
+        success: false,
+        errors: [
+          {
+            field: "Home",
+            message: "You must be signed in to a home to delete a post",
           },
         ],
       };

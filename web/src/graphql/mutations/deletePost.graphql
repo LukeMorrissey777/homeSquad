@@ -1,5 +1,5 @@
-mutation DeletePost($id: Float!) {
-  deletePost(id: $id) {
+mutation DeletePost($id: Float!, $homeId: Float!) {
+  deletePost(id: $id, homeId: $homeId) {
     errors {
       field
       message

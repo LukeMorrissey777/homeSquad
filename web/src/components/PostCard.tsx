@@ -3,14 +3,21 @@ import { DeleteIcon } from "@chakra-ui/icons";
 import { Box, Center, Heading, HStack, Spacer, Text } from "@chakra-ui/layout";
 import React from "react";
 import { Col } from "react-bootstrap";
+import { DeleteItemModal } from "./DeleteItemModal";
 
 interface PostCardProps {
+  homeId: number;
   author: string;
   text: string;
   postId: number;
 }
 
-export const PostCard: React.FC<PostCardProps> = ({ postId, author, text }) => {
+export const PostCard: React.FC<PostCardProps> = ({
+  homeId,
+  postId,
+  author,
+  text,
+}) => {
   return (
     <Center>
       <Box
@@ -27,11 +34,11 @@ export const PostCard: React.FC<PostCardProps> = ({ postId, author, text }) => {
             <Text mt={3}>- {author}</Text>
           </Box>
           <Spacer />
-          <IconButton
-            size="sm"
-            aria-label="Delete/Leave Home"
-            colorScheme="red"
-            icon={<DeleteIcon />}
+          <DeleteItemModal
+            homeId={homeId}
+            id={postId}
+            text={text}
+            type="Post"
           />
         </HStack>
       </Box>

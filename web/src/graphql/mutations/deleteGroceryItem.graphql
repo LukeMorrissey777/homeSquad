@@ -1,5 +1,5 @@
-mutation DeleteGroceryItem($id: Float!) {
-  deleteGroceryItem(id: $id) {
+mutation DeleteGroceryItem($id: Float!, $homeId: Float!) {
+  deleteGroceryItem(id: $id, homeId: $homeId) {
     success
     errors {
       message

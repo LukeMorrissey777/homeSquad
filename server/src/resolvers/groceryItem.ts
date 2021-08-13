@@ -91,6 +91,7 @@ export class GroceryItemResolver implements ResolverInterface<GroceryItem> {
   @Mutation(() => SuccessResponse)
   async deleteGroceryItem(
     @Arg("id") id: number,
+    @Arg("homeId") homeId: number,
     @Ctx() { req, em }: MyContext
   ): Promise<SuccessResponse> {
     if (!req.session.userId) {
@@ -101,6 +102,17 @@ export class GroceryItemResolver implements ResolverInterface<GroceryItem> {
             field: "username",
             message:
               "You are not logged in so you cannot delete a grocery list",
+          },
+        ],
+      };
+    }
+    if (homeId == -1) {
+      return {
+        success: false,
+        errors: [
+          {
+            field: "home",
+            message: "You must be signed in to a home to delete a grocery item",
           },
         ],
       };

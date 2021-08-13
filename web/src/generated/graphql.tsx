@@ -115,6 +115,7 @@ export type MutationCreatePostArgs = {
 
 
 export type MutationDeletePostArgs = {
+  homeId: Scalars['Float'];
   id: Scalars['Float'];
 };
 
@@ -126,6 +127,7 @@ export type MutationCreateGroceryItemArgs = {
 
 
 export type MutationDeleteGroceryItemArgs = {
+  homeId: Scalars['Float'];
   id: Scalars['Float'];
 };
 
@@ -260,6 +262,7 @@ export type CreatePostMutation = (
 
 export type DeleteGroceryItemMutationVariables = Exact<{
   id: Scalars['Float'];
+  homeId: Scalars['Float'];
 }>;
 
 
@@ -294,6 +297,7 @@ export type DeleteHomeMutation = (
 
 export type DeletePostMutationVariables = Exact<{
   id: Scalars['Float'];
+  homeId: Scalars['Float'];
 }>;
 
 
@@ -513,8 +517,8 @@ export function useCreatePostMutation() {
   return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument);
 };
 export const DeleteGroceryItemDocument = gql`
-    mutation DeleteGroceryItem($id: Float!) {
-  deleteGroceryItem(id: $id) {
+    mutation DeleteGroceryItem($id: Float!, $homeId: Float!) {
+  deleteGroceryItem(id: $id, homeId: $homeId) {
     success
     errors {
       message
@@ -543,8 +547,8 @@ export function useDeleteHomeMutation() {
   return Urql.useMutation<DeleteHomeMutation, DeleteHomeMutationVariables>(DeleteHomeDocument);
 };
 export const DeletePostDocument = gql`
-    mutation DeletePost($id: Float!) {
-  deletePost(id: $id) {
+    mutation DeletePost($id: Float!, $homeId: Float!) {
+  deletePost(id: $id, homeId: $homeId) {
     errors {
       field
       message

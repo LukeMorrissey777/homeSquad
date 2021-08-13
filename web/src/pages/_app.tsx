@@ -13,6 +13,8 @@ import {
   RegisterMutation,
   HomeDocument,
   CreateGroceryItemMutation,
+  DeleteGroceryItemMutation,
+  DeletePostMutation,
 } from "../generated/graphql";
 
 import theme from "../theme";
@@ -162,6 +164,51 @@ const client = createClient({
                       result.createGroceryItem.groceryItem?.author?.username,
                   },
                 });
+                return query;
+              }
+            );
+          },
+          deleteGroceryItem: (result, args, cache, info) => {
+            betterUpdateQuery<DeleteGroceryItemMutation, HomeQuery>(
+              cache,
+              { query: HomeDocument, variables: { id: args.homeId } },
+              result,
+              (result, query) => {
+                if (
+                  result.deleteGroceryItem.errors ||
+                  !query.home?.groceryItems
+                ) {
+                  return query;
+                }
+                const groceryIndex = query.home?.groceryItems?.findIndex(
+                  (element) => {
+                    return element.id == args.id;
+                  }
+                );
+                query.home.groceryItems = query.home.groceryItems.splice(
+                  groceryIndex,
+                  groceryIndex
+                );
+                return query;
+              }
+            );
+          },
+          deletePost: (result, args, cache, info) => {
+            betterUpdateQuery<DeletePostMutation, HomeQuery>(
+              cache,
+              { query: HomeDocument, variables: { id: args.homeId } },
+              result,
+              (result, query) => {
+                if (result.deletePost.errors || !query.home?.posts) {
+                  return query;
+                }
+                const groceryIndex = query.home?.posts?.findIndex((element) => {
+                  return element.id == args.id;
+                });
+                query.home.posts = query.home.posts.splice(
+                  groceryIndex,
+                  groceryIndex
+                );
                 return query;
               }
             );
