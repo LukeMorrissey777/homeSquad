@@ -2,6 +2,7 @@ import { __prod__ } from "./constants";
 import { Home } from "./entities/Home";
 import { MikroORM } from "@mikro-orm/core";
 import path from "path";
+import "dotenv-safe/config";
 import { User } from "./entities/User";
 import { HomeUserLink } from "./entities/HomeUserLink";
 import { GroceryItem } from "./entities/GroceryItem";
@@ -13,9 +14,7 @@ export default {
     pattern: /^[\w-]+\d+\.[jt]s$/,
   },
   entities: [Home, User, HomeUserLink, Post, GroceryItem],
-  dbName: "homesquad_db",
-  user: "postgres",
-  password: "postgres",
   type: "postgresql",
+  clientUrl: process.env.DATABASE_URL,
   debug: !__prod__,
 } as Parameters<typeof MikroORM.init>[0];

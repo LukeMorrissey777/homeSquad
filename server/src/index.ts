@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import "dotenv-safe/config";
 import { MikroORM } from "@mikro-orm/core";
 import { __prod__ } from "./constants";
 import microConfig from "./mikro-orm.config";
@@ -8,7 +9,7 @@ import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
 import { HomeResolver } from "./resolvers/home";
 import { UserResolver } from "./resolvers/user";
-import redis from "redis";
+import Redis from "ioredis";
 import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
@@ -21,20 +22,21 @@ const main = async () => {
   const app = express();
 
   const RedisStore = connectRedis(session);
-  const redisClient = redis.createClient();
+  const redis = new Redis(process.env.REDIS_URL);
 
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: process.env.CORS_ORGIN,
       credentials: true,
     })
   );
 
+  app.set("trust proxy", 1);
   app.use(
     session({
       name: "qid",
       store: new RedisStore({
-        client: redisClient,
+        client: redis,
         disableTouch: true,
       }),
       cookie: {
@@ -42,9 +44,10 @@ const main = async () => {
         httpOnly: true,
         secure: __prod__,
         sameSite: "lax",
+        domain: __prod__ ? ".homesquad247.com" : undefined,
       },
       saveUninitialized: false,
-      secret: "jfldjsfalkdjfadfk",
+      secret: process.env.SESSION_SECRET,
       resave: false,
     })
   );
@@ -67,7 +70,7 @@ const main = async () => {
     cors: false,
   });
 
-  app.listen(4000, () => {
+  app.listen(parseInt(process.env.PORT), () => {
     console.log("server started on localhost:4000");
   });
   //   const home = orm.em.create(Home, { name: "my first home" });
