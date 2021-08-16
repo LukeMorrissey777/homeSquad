@@ -75,9 +75,17 @@ const client = createClient({
               (result, query) => {
                 if (
                   result.createHome.errors ||
-                  !query.me?.homes ||
+                  !query.me ||
                   !result.createHome.home
                 ) {
+                  return query;
+                } else if (!query.me.homes) {
+                  query.me.homes = [
+                    {
+                      id: result.createHome.home.id,
+                      name: result.createHome.home.name,
+                    },
+                  ];
                   return query;
                 } else {
                   query.me.homes.push({
