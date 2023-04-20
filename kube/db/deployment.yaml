@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-squad-db
+spec:
+  selector:
+    matchLabels:
+      app: home-squad-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: home-squad-db
+    spec:
+      containers:
+        - name: home-squad-db
+          image: postgres:13
+          ports:
+            - containerPort: 5432
+              name: "postgres"
+          volumeMounts:
+            - mountPath: "/var/lib/postgresql/data"
+              name: home-squad-postgres-data-storage
+          env:
+            - name: POSTGRES_DB
+              value: homesquad_db
+            - name: POSTGRES_USER
+              value: user
+            - name: POSTGRES_PASSWORD
+              value: password
+      volumes:
+        - name: home-squad-postgres-data-storage
+          persistentVolumeClaim:
+            claimName: home-squad-postgres-data-persisent-volume-claim

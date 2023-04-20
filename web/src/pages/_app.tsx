@@ -30,7 +30,7 @@ function betterUpdateQuery<Result, Query>(
 }
 
 const client = createClient({
-  url: process.env.NEXT_PUBLIC_API_URL as string,
+  url: "http://localhost:4000/graphql",
   fetchOptions: {
     credentials: "include",
   },
