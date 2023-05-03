@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-squad-frontend
+spec:
+  selector:
+    matchLabels:
+      app: home-squad-frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: home-squad-frontend
+    spec:
+      containers:
+        - name: home-squad-frontend
+          image: hs_web:kube-0.1
+          ports:
+            - containerPort: 3000
+              name: "react"
